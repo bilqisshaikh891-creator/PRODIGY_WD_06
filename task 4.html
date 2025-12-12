@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Chat App</title>
+    <style>
+        body { font-family: Arial; background: #1d1b3f; color: white; padding: 20px; }
+        #chatBox { background: #ffffff20; padding: 15px; height: 300px; overflow-y: auto; border-radius: 8px; }
+        #msg { width: 70%; padding: 8px; border-radius: 5px; border: none; }
+        #send { padding: 8px 15px; background: #00b7ff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #user { padding: 5px; border-radius: 5px; }
+        .bubble { margin: 8px 0; padding: 8px 12px; background: #3a37a5; border-radius: 10px; }
+        .me { background: #00b7ff; }
+    </style>
+</head>
+
+<body>
+
+<h2>Task-04: Real-Time Chat Application</h2>
+
+<label>Select Username:</label>
+<select id="user">
+    <option>You</option>
+    <option>Friend</option>
+</select>
+
+<div id="chatBox"></div><br>
+
+<input type="text" id="msg" placeholder="Type message...">
+<button id="send">Send</button>
+
+<script>
+    // Load existing chat
+    function loadChat() {
+        let chat = JSON.parse(localStorage.getItem("chat")) || [];
+        let chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML = "";
+
+        chat.forEach(m => {
+            let bubble = document.createElement("div");
+            bubble.className = "bubble " + (m.user === "You" ? "me" : "");
+            bubble.textContent = m.user + ": " + m.text;
+            chatBox.appendChild(bubble);
+        });
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    loadChat();
+
+    // Send message
+    document.getElementById("send").onclick = function() {
+        let text = document.getElementById("msg").value;
+        let user = document.getElementById("user").value;
+        if (text.trim() === "") return;
+
+        let chat = JSON.parse(localStorage.getItem("chat")) || [];
+        chat.push({ user, text });
+
+        localStorage.setItem("chat", JSON.stringify(chat));
+
+        document.getElementById("msg").value = "";
+        loadChat();
+    };
+
+    // Auto-refresh every second (simulated real-time)
+    setInterval(loadChat, 1000);
+</script>
+
+</body>
+</html>
